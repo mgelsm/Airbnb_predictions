@@ -1,0 +1,10 @@
+# IPython Notebook
+.ipynb_checkpoints
+
+# Data files
+age_gender_bkts.csv
+countries.csv
+sample_submission_NDF.csv
+sessions.csv
+test_users.csv
+train_users_2.csv
