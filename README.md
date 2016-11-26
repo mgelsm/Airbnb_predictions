@@ -43,9 +43,6 @@ We will implement a model that will be able to obtain the maximum score at the  
 
 where *k* = 5, *rel_i* is the relevance of the result at position  *i*, *IDCG_k* is the maximum possible (ideal) *DCG* for a given set of queries. All *NDCG* calculations are relative values on the interval 0.0 to 1.0.
 
-.
-
-
 
 ## Vizualization - 2 Weeks
 In the ideal case, an interactive visualization map of each destination country with a user type will be presented.   
