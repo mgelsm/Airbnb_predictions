@@ -37,8 +37,9 @@ During this phase we will expore the different files and try to see what is inte
 ## Machine Learning - 3 Weeks
 We will implement a model that will be able to obtain the maximum score at the  NDCG (Normalized discounted cumulative gain). The NDCG is given by the following formula:
 
-$ DCG_k=\sum_{i=1}^k\frac{2^{rel_i}-1}{\log_2{\left(i+1\right)}} $
-$ nDCG_k=\frac{DCG_k}{IDCG_k} $
+![equation](http://latex.codecogs.com/gif.latex?DCG_k%3D%5Csum_%7Bi%3D1%7D%5Ek%5Cfrac%7B2%5E%7Brel_i%7D-1%7D%7B%5Clog_2%7B%5Cleft%28i+1%5Cright%29%7D%7D)
+
+![equation](http://latex.codecogs.com/gif.latex?nDCG_k%3D%5Cfrac%7BDCG_k%7D%7BIDCG_k%7D)
 where k = 5
 
 ## Vizualization - 2 Weeks
