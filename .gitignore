@@ -1,6 +1,10 @@
 # IPython Notebook
 .ipynb_checkpoints
 
+# Word files
+.doc
+.docx
+
 # Data files
 age_gender_bkts.csv
 countries.csv
