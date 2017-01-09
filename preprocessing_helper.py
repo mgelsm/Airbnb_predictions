@@ -95,6 +95,49 @@ def cleanFirst_affiliate_tracked(df):
     df.loc[df['first_affiliate_tracked'].isnull(), 'first_affiliate_tracked'] = 'untracked'
     return df
 
+# Clean Date_first_booking
+def cleanDate_First_booking(df):
+    df['date_first_booking'] = pd.to_datetime(df['date_first_booking'])
+    return df
+
+def plotDate_First_booking_months(df):
+    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar")
+    plt.xlabel('Month')
+    plt.ylabel('Number of bookings')
+    plt.title('Number of bookings over the months of the year')
+    plt.show()
+    
+def plotDate_First_booking_years(df):
+    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(15,10))
+    plt.ylabel('Number of bookings')
+    plt.title('Number of bookings throughout time')
+    plt.show()
+    
+def plotDate_First_booking_months(df):
+    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar")
+    plt.xlabel('Month')
+    plt.ylabel('Number of bookings')
+    plt.title('Number of bookings over the months of the year')
+    plt.show()
+    
+def plotsth(df):
+    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar")
+    plt.xlabel('Month')
+    plt.ylabel('Number of bookings')
+    plt.title('Number of bookings over the months of the year')
+    plt.show()
+    
+def computeDate_First_booking_weekdays(df):
+    weekday = []
+    for date in df.date_first_booking:
+        weekday.append(date.weekday())
+    return pd.Series(weekday)
+
+def plotDate_First_booking_weekdays(df):
+    sns.barplot(x = df.value_counts().index, y=df.value_counts().values)
+    plt.xlabel('Week Day')
+    plt.title(s='Number of bookings per day in the week')
+    
 #export file to csv
 # @arg(in) filename : name of file in String, with .csv at the end 
 # @arg(in) df : DataFrame
