@@ -354,7 +354,7 @@ def plotActionFeature(data_session_number):
 # @arg(in) df : DataFrame
 # @arg(out) data_time_mean : DataFrame of user_id with their average time spent     
 def createAverageTimeFeature(df):
-    data_time_mean = df.groupby(['user_id'], as_index=False).mean().groupby('user_id')['secs_elapsed'].mean()
+    data_time_mean = df.groupby(['user_id'], as_index=False).mean()
     return data_time_mean
 
 
@@ -362,8 +362,9 @@ def createAverageTimeFeature(df):
 # @arg(in) df : DataFrame
 # @arg(out) data_time_total : DataFrame of user_id with their total time spent     
 def createTotalTimeFeature(df):
-    data_time_total = df.groupby(['user_id'], as_index=False).sum().groupby('user_id')['secs_elapsed'].sum()
+    data_time_total = df.groupby(['user_id'], as_index=False).sum()
     return data_time_total
+
 
 # Plot time spent sessions.csv
 # @arg(in) df : DataFrame
@@ -381,12 +382,12 @@ def plotTimeFeature(data_time, type_plot):
     plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
     plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
     plt.rc('legend', fontsize=SIZE)          # legend fontsize
-    plt.rc('figure', titlesize=SIZE) 
+    plt.rc('figure', titlesize=SIZE)
     plt.hist(data_time, bins =np.logspace(np.log10(time_min),np.log10(time_max),10000), log=True)
     plt.gca().set_xscale("log")
     
     if type_plot == 'total': 
-        plt.title('Time spent in second per session')
+        plt.title('Total time spent in second per user')
     elif type_plot == 'mean': 
         plt.title('Average time spent in second per user')
     elif type_plot == 'dist': 
