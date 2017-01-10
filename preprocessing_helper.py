@@ -207,13 +207,6 @@ def plotDate_First_booking_months(df):
     plt.title('Number of bookings over the months of the year')
     plt.show()
     
-def plotsth(df):
-    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar")
-    plt.xlabel('Month')
-    plt.ylabel('Number of bookings')
-    plt.title('Number of bookings over the months of the year')
-    plt.show()
-    
 def computeDate_First_booking_weekdays(df):
     weekday = []
     for date in df.date_first_booking:
@@ -224,6 +217,7 @@ def plotDate_First_booking_weekdays(df):
     sns.barplot(x = df.value_counts().index, y=df.value_counts().values)
     plt.xlabel('Week Day')
     plt.title(s='Number of bookings per day in the week')
+    plt.show()
     
 #export file to csv
 # @arg(in) filename : name of file in String, with .csv at the end 
