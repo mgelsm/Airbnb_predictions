@@ -50,7 +50,7 @@ def cleanAge(df, type):
         
     if(type == 'd'):
         df = df[df['age'] != -1]
-        
+    df['age'] = df['age'].astype(int)
     return df
 
 # clean ageBucket
@@ -93,7 +93,9 @@ def travellerCountryProcess(df):
 # @arg(in) df_destination_age_female : DataFrame  of females  
 def travellerProportionCountryPlot(df_destination_age_male,df_destination_age_female):
     #male in blue
-    fig, axes = plt.subplots(nrows=3, ncols=2)
+    fig, axes = plt.subplots(nrows=5, ncols=2)
+    fig.set_size_inches(10, 12, forward=True)
+
     for (i, group), ax in zip(df_destination_age_male.groupby("country_destination"), axes.flat):
         group.plot(x='age_bucket', y="proportion_%", title=str(i),ax=ax ,kind='line',color='b',label='male' )
         ax.set_ylim([0, 6])
@@ -112,10 +114,12 @@ def travellerProportionCountryPlot(df_destination_age_male,df_destination_age_fe
 # @arg(in) df_destination_age_female : DataFrame  of females  
 def travellerNumberCountryPlot(df_destination_age_male,df_destination_age_female):
     #male in blue
-    fig, axes = plt.subplots(nrows=3, ncols=2)
+    fig, axes = plt.subplots(nrows=5, ncols=2)
+    fig.set_size_inches(10, 12, forward=True)
+    
     for (i, group), ax in zip(df_destination_age_male.groupby("country_destination"), axes.flat):
         group.plot(x='age_bucket', y="population_in_thousands", title=str(i),ax=ax ,kind='line',color='b',label='male' )
-        ax.set_ylim([100, 4000])
+        ax.set_ylim([200, 6000])
         ax.set_ylabel('people in thousands')
     plt.tight_layout()
 
@@ -123,10 +127,9 @@ def travellerNumberCountryPlot(df_destination_age_male,df_destination_age_female
     #female in red
     for (i, group), ax in zip(df_destination_age_female.groupby("country_destination"), axes.flat):
         group.plot(x='age_bucket', y="population_in_thousands", title=str(i),ax=ax ,kind='line',color='r',label='female') 
-        ax.set_ylim([100, 4000])
+        ax.set_ylim([200, 12000])
         ax.set_ylabel('people in thousands')
     plt.tight_layout()
-    plt.title('salut')
     plt.show()
     
 # Display number of travelers number per country
@@ -157,14 +160,23 @@ def exportInvalidAge(df):
 # plot age
 # @arg(in) df : DataFrame    
 def plotAge(df):
-    df.id.groupby(df.age).count().plot(kind='bar', alpha=0.4, color='b',figsize=(20,10),logy=True)
-    plt.ylabel('Number of  users, log scale')
+   
+    df2 = df[df['age'] != -1]
+    df2.id.groupby(df2.age).count().plot(kind='bar', alpha=0.6, color='b',figsize=(20,8))
+    plt.ylabel('Number of  users, lin scale')  
+    ax = plt.axes()
+
+    ticks = ax.xaxis.get_ticklocs()
+    ticklabels = [l.get_text() for l in ax.xaxis.get_ticklabels()]
+    ax.xaxis.set_ticks(ticks[::2])
+    ax.xaxis.set_ticklabels(ticklabels[::2])
     plt.show()
+    
     
 # plot gender
 # @arg(in) df : DataFrame    
 def plotGender(df):
-    df.id.groupby(df.gender).count().plot(kind='bar', alpha=0.4, color='b',figsize=(20,10))
+    df.id.groupby(df.gender).count().plot(kind='bar', alpha=0.4, color='b',figsize=(10,3))
     plt.ylabel('Number of  users')
     plt.show()
     
@@ -186,13 +198,6 @@ def cleanFirst_affiliate_tracked(df):
 def cleanDate_First_booking(df):
     df['date_first_booking'] = pd.to_datetime(df['date_first_booking'])
     return df
-
-def plotDate_First_booking_months(df):
-    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar")
-    plt.xlabel('Month')
-    plt.ylabel('Number of bookings')
-    plt.title('Number of bookings over the months of the year')
-    plt.show()
     
 def plotDate_First_booking_years(df):
     df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(15,10))
@@ -218,6 +223,7 @@ def plotDate_First_booking_weekdays(df):
     plt.xlabel('Week Day')
     plt.title(s='Number of bookings per day in the week')
     plt.show()
+
     
 #export file to csv
 # @arg(in) filename : name of file in String, with .csv at the end 
