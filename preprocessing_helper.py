@@ -92,6 +92,14 @@ def travellerCountryProcess(df):
 # @arg(in) df_destination_age_male : DataFrame  of males  
 # @arg(in) df_destination_age_female : DataFrame  of females  
 def travellerProportionCountryPlot(df_destination_age_male,df_destination_age_female):
+    SIZE = 10
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
     #male in blue
     fig, axes = plt.subplots(nrows=5, ncols=2)
     fig.set_size_inches(10, 12, forward=True)
@@ -113,6 +121,14 @@ def travellerProportionCountryPlot(df_destination_age_male,df_destination_age_fe
 # @arg(in) df_destination_age_male : DataFrame  of males  
 # @arg(in) df_destination_age_female : DataFrame  of females  
 def travellerNumberCountryPlot(df_destination_age_male,df_destination_age_female):
+    SIZE = 10
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
     #male in blue
     fig, axes = plt.subplots(nrows=5, ncols=2)
     fig.set_size_inches(10, 12, forward=True)
@@ -135,7 +151,15 @@ def travellerNumberCountryPlot(df_destination_age_male,df_destination_age_female
 # Display number of travelers number per country
 # @arg(in) df_destination_total : DataFrame of all travellers 
 def destinationTotalPlot(df_destination_total):
-    ax = df_destination_total.sort_values('population_in_thousands',ascending=False).plot(x='country_destination', y='population_in_thousands',kind='bar')
+    SIZE = 20
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
+    ax = df_destination_total.sort_values('population_in_thousands',ascending=False).plot(x='country_destination', y='population_in_thousands',kind='bar', figsize=(20,8))
     ax.set_ylabel('people in thousands')
     ax.set_title('Destination of travelers')
     plt.show()
@@ -162,8 +186,16 @@ def exportInvalidAge(df):
 def plotAge(df):
    
     df2 = df[df['age'] != -1]
+    SIZE = 20
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
     df2.id.groupby(df2.age).count().plot(kind='bar', alpha=0.6, color='b',figsize=(20,8))
-    plt.ylabel('Number of  users, lin scale')  
+ 
     ax = plt.axes()
 
     ticks = ax.xaxis.get_ticklocs()
@@ -176,6 +208,14 @@ def plotAge(df):
 # plot gender
 # @arg(in) df : DataFrame    
 def plotGender(df):
+    SIZE = 10
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
     df.id.groupby(df.gender).count().plot(kind='bar', alpha=0.4, color='b',figsize=(10,3))
     plt.ylabel('Number of  users')
     plt.show()
@@ -200,13 +240,21 @@ def cleanDate_First_booking(df):
     return df
     
 def plotDate_First_booking_years(df):
-    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(15,10))
+    SIZE = 20
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
+    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(20,8))
     plt.ylabel('Number of bookings')
     plt.title('Number of bookings throughout time')
     plt.show()
     
 def plotDate_First_booking_months(df):
-    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar")
+    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar",figsize=(20,8))
     plt.xlabel('Month')
     plt.ylabel('Number of bookings')
     plt.title('Number of bookings over the months of the year')
@@ -219,7 +267,8 @@ def computeDate_First_booking_weekdays(df):
     return pd.Series(weekday)
 
 def plotDate_First_booking_weekdays(df):
-    sns.barplot(x = df.value_counts().index, y=df.value_counts().values)
+    #sns.barplot(x = df.value_counts().index, y=df.value_counts().values)
+    df.id.groupby([df.date_first_booking.dt.weekday]).count().plot(kind="bar",figsize=(20,8))
     plt.xlabel('Week Day')
     plt.title(s='Number of bookings per day in the week')
     plt.show()
@@ -232,3 +281,107 @@ def saveFile(df, filename):
     pd.DataFrame(df, columns=list(df.columns)).to_csv(filename, index=False, encoding="utf-8") 
     print('file saved')    
     
+# Delete NaN given subset
+# @arg(in) df : DataFrame  
+# @arg(in) subset :  name of the subset, between ''
+def cleanSubset(df, subset):
+    df2 = df.dropna(subset=[subset])
+    removed = round(100-len(df2)/len(df)*100,2)
+    print(removed, '% have been removed from the original dataframe')
+    return df2
+
+
+# Plot histogram of a column
+# @arg(in) df : column of a dataframe. ex : df['my_col']
+def plotHist(df_col):
+    SIZE = 20
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE) 
+    df_col.value_counts().plot(kind='bar', figsize=(20,8))
+
+
+# Clean Action of file sessions.csv
+# @arg(in) df : DataFrame  
+def cleanAction(df):
+    df2 = copy.deepcopy(df)
+    df.loc[df['action'].isnull(), ['action']] = '-unknown-'
+    df.loc[df['action_type'].isnull(), 'action_type'] = '-unknown-'
+    df.loc[df['action_detail'].isnull(), 'action_detail'] = '-unknown-'
+    removed = round(100-len(df)/len(df2)*100,2)
+    print(removed, '% have been removed from the original dataframe')
+    return df
+
+
+# Create feature : total number of action per user file sessions.csv
+# @arg(in) df : DataFrame
+# @arg(out) data_session_number : DataFrame of user_id with their number of action  
+def createActionFeature(df):
+    data_session_number = df.groupby(['user_id'], as_index=False)['action'].count()
+    return data_session_number
+
+
+# Plot total number of action per user file sessions.csv
+# @arg(in) df : DataFrame
+def plotActionFeature(data_session_number):
+    num_min= 1
+    num_max= max(data_session_number['action'])
+    SIZE = 20
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE) 
+    data_session_number.hist(bins = np.logspace(np.log10(num_min),np.log10(num_max),100), figsize=(20,8))
+    plt.gca().set_xscale("log")
+    plt.title('Total number of actions per user')
+
+    
+# Create feature : average time spent per user file sessions.csv
+# @arg(in) df : DataFrame
+# @arg(out) data_time_mean : DataFrame of user_id with their average time spent     
+def createAverageTimeFeature(df):
+    data_time_mean = df.groupby(['user_id'], as_index=False).mean()
+    return data_time_mean
+
+
+# Create feature : total time spent per user file sessions.csv
+# @arg(in) df : DataFrame
+# @arg(out) data_time_total : DataFrame of user_id with their total time spent     
+def createTotalTimeFeature(df):
+    data_time_total = df.groupby(['user_id'], as_index=False).sum()
+    return data_time_total
+
+
+# Plot time spent sessions.csv
+# @arg(in) df : DataFrame
+def plotTimeFeature(data_time, type_plot):
+
+    # Showing users spending at least 20 seconds by session on average
+    time_min= 20
+    time_max= max(data_time)
+    
+    plt.figure(figsize=(20,8))
+    SIZE = 20
+    plt.rc('font', size=SIZE)                # controls default text sizes
+    plt.rc('axes', titlesize=SIZE)           # fontsize of the axes title
+    plt.rc('axes', labelsize=SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
+    plt.rc('legend', fontsize=SIZE)          # legend fontsize
+    plt.rc('figure', titlesize=SIZE)
+    plt.hist(data_time, bins =np.logspace(np.log10(time_min),np.log10(time_max),10000), log=True)
+    plt.gca().set_xscale("log")
+    
+    if type_plot == 'total': 
+        plt.title('Total time spent in second per user')
+    elif type_plot == 'mean': 
+        plt.title('Average time spent in second per user')
+    elif type_plot == 'dist': 
+        plt.title('Time spent in second per session')
