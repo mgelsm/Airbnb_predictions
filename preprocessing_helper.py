@@ -20,7 +20,7 @@ import pylab
 # @arg(in) type : 'k' : unvalid data to be replaced by -1. 'd' : unvalid data to be deleted
 def cleanAge(df, type):
     # Finding users who put their birthdate instead of age in original dataframe
-    df_birthyear = df[(df['age']>=1926) & (df['age']<=2001)]
+    df_birthyear = df[(df['age']>=1916) & (df['age']<=2001)]
 
     # Converting to age
     df_birthyear = copy.deepcopy(df_birthyear)
@@ -32,7 +32,7 @@ def cleanAge(df, type):
 
     # Assigning a -1 value to invalid ages
     df = copy.deepcopy(df)
-    df.loc[((df['age']<15) | (df['age']>90)), 'age'] = -1
+    df.loc[((df['age']<15) | (df['age']>100)), 'age'] = -1
     
     if(type == 'k'):
         # Counting invalid ages:
@@ -56,7 +56,7 @@ def cleanAge(df, type):
 # clean ageBucket
 # @arg(in) df : DataFrame
 def cleanAgeBucket(df):
-    df.drop(df.ix[df['age_bucket'].isin(['0-4','5-9','10-14','90-94','95-99','100+'])].index, inplace= True)
+    df.drop(df.ix[df['age_bucket'].isin(['0-4','5-9','10-14','100+'])].index, inplace= True)
     return df
 
 # preprocess display of travelers per country given age and sex
@@ -281,6 +281,16 @@ def saveFile(df, filename):
     pd.DataFrame(df, columns=list(df.columns)).to_csv(filename, index=False, encoding="utf-8") 
     print('file saved')    
     
+# Delete NaN given subset
+# @arg(in) df : DataFrame  
+# @arg(in) subset :  name of the subset, between ''
+def cleanSubset(df, subset):
+    df2 = df.dropna(subset=[subset])
+    removed = round(100-len(df2)/len(df)*100,2)
+    print(removed, '% have been removed from the original dataframe')
+    return df2
+
+
 # Delete NaN given subset
 # @arg(in) df : DataFrame  
 # @arg(in) subset :  name of the subset, between ''
