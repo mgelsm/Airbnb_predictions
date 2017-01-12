@@ -248,7 +248,7 @@ def plotDate_First_booking_years(df):
     plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
     plt.rc('legend', fontsize=SIZE)          # legend fontsize
     plt.rc('figure', titlesize=SIZE)
-    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(20,8))
+    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(20,8),logy=True)
     plt.ylabel('Number of bookings')
     plt.title('Number of bookings throughout time')
     plt.show()
