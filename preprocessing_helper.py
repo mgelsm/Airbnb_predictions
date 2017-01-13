@@ -348,6 +348,8 @@ def plotActionFeature(data_session_number):
     plt.rc('legend', fontsize=SIZE)          # legend fontsize
     plt.rc('figure', titlesize=SIZE) 
     data_session_number.hist(bins = np.logspace(np.log10(num_min),np.log10(num_max),100), figsize=(20,8))
+    plt.xlabel('Number of actions')
+    plt.ylabel('Number of users')
     plt.gca().set_xscale("log")
     plt.title('Total number of actions per user')
 
@@ -386,6 +388,8 @@ def plotTimeFeature(data_time, type_plot):
     plt.rc('legend', fontsize=SIZE)          # legend fontsize
     plt.rc('figure', titlesize=SIZE)
     plt.hist(data_time, bins =np.logspace(np.log10(time_min),np.log10(time_max),10000), log=True)
+    plt.xlabel('Time in seconds')
+    plt.ylabel('Number of users')
     plt.gca().set_xscale("log")
     
     if type_plot == 'total': 
