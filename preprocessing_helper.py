@@ -13,6 +13,8 @@ import seaborn as sns
 from pandas.tools.plotting import scatter_matrix
 import copy
 import pylab
+import calendar
+
 
 
 # clean age
@@ -248,28 +250,25 @@ def plotDate_First_booking_years(df):
     plt.rc('ytick', labelsize=SIZE)          # fontsize of the tick labels
     plt.rc('legend', fontsize=SIZE)          # legend fontsize
     plt.rc('figure', titlesize=SIZE)
-    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(20,8),logy=True)
+    df.date_first_booking.value_counts().plot(kind='line', linewidth=1,figsize=(20,8))
     plt.ylabel('Number of bookings')
+    plt.xlabel('Time in days')
     plt.title('Number of bookings throughout time')
     plt.show()
     
 def plotDate_First_booking_months(df):
-    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind="bar",figsize=(20,8))
+    df.id.groupby([df.date_first_booking.dt.month]).count().plot(kind='bar',figsize=(20,8))
+    plt.xticks(np.arange(12), calendar.month_name[1:13])
     plt.xlabel('Month')
     plt.ylabel('Number of bookings')
     plt.title('Number of bookings over the months of the year')
     plt.show()
-    
-def computeDate_First_booking_weekdays(df):
-    weekday = []
-    for date in df.date_first_booking:
-        weekday.append(date.weekday())
-    return pd.Series(weekday)
 
 def plotDate_First_booking_weekdays(df):
-    #sns.barplot(x = df.value_counts().index, y=df.value_counts().values)
-    df.id.groupby([df.date_first_booking.dt.weekday]).count().plot(kind="bar",figsize=(20,8))
+    df.id.groupby([df.date_first_booking.dt.weekday]).count().plot(kind='bar',figsize=(20,8))
+    plt.xticks(np.arange(7), calendar.day_name[0:7])
     plt.xlabel('Week Day')
+    plt.ylabel('Number of bookings')
     plt.title(s='Number of bookings per day in the week')
     plt.show()
 
