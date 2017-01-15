@@ -12,6 +12,10 @@ import scipy.io # Import data
 from xgboost.sklearn import XGBClassifier
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.metrics import make_scorer
+from sklearn.model_selection import learning_curve
+import xgboost as xgb
+import matplotlib.pyplot as plt 
+import metrics_helper as metrics_helper
 
 
 # @name buildFeatureMat
@@ -104,3 +108,61 @@ def get5likelycountries(y_pred, id_test):
         cts += (np.argsort(y_pred[i])[::-1])[:5].tolist()
     return cts,ids
 
+def plotFeaturesImportance(model,X_train):
+    # Get the importance of the features
+    importances = model.feature_importances_
+
+    # Compute the standard deviation model.estimators_
+    #std = np.std([tree.feature_importances_ for tree in model.get_params() ], axis=0)
+
+    # Get the indices of the most important features, in descending order
+    indices = np.argsort(importances)[::-1]
+
+    variable_importance = []
+
+    # Print the feature ranking
+    print("Feature ranking:")
+
+    # range(X_train.shape[1]) to print all the features (however only 55 first are !=0)
+    n_features = 20
+    for feature in range(n_features):
+        print("%d. feature %s (%f), indice %d" % (feature+1, X_train.columns[feature], importances[indices[feature]], indices[feature]))
+        variable_importance.append({'Variable': X_train.columns[feature], 'Importance': importances[indices[feature]]})
+
+    variable_importance=pd.DataFrame(variable_importance)
+    plt.figure(figsize=(20,10))
+    plt.title("Feature importances")
+    plt.bar(range(n_features), importances[indices[:n_features]], align="center")
+    plt.xticks(range(n_features), indices[:n_features])
+    plt.xlim([-1, n_features])
+    plt.show()
+
+def plotLearningCurve(model,X_train,y_labels,cv):
+    plt.figure()
+    plt.title("XGB model")
+    plt.xlabel("Training examples")
+    plt.ylabel("NDCG score")
+
+    train_sizes, train_scores, test_scores = learning_curve(model, X_train, y_labels, cv=cv,
+                                                            scoring = metrics_helper.ndcg_scorer)
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+    plt.grid()
+
+
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std,
+                     train_scores_mean + train_scores_std, alpha=0.1,
+                     color="r")
+    plt.fill_between(train_sizes, test_scores_mean - test_scores_std,
+                     test_scores_mean + test_scores_std, alpha=0.1, color="g")
+    plt.plot(train_sizes, train_scores_mean, 'o-', color="r",
+             label="Training score")
+    plt.plot(train_sizes, test_scores_mean, 'o-', color="g",
+             label="Cross-validation score")
+
+    axes = plt.gca()
+    #axes.set_ylim([0.4,1.05])
+
+    plt.legend(loc="best")
