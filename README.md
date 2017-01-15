@@ -1,10 +1,10 @@
-# Airbnb Challenge : Where will a new guest book their first travel experience?
+# Airbnb Challenge : Where will new guests book their first travel experience?
 
 # Abstract
 
 This project will be developped within the framework of the course An Introduction to Data Science.
 It is inspired by a Kaggle challenge proposed in February 2016 via their [website] (https://www.kaggle.com/c/airbnb-recruiting-new-user-bookings/data).
-It aims at determining where a new guest will book their first travel experience.
+It aims at determining where new guests will book their first travel experience.
 By accurately predicting this information, Airbnb can share more personalized content with their community, decrease the average time to first booking, and better forecast demand.
 
 # Description
@@ -42,7 +42,3 @@ We will implement a model that will be able to obtain the maximum score at the  
 ![equation](http://latex.codecogs.com/gif.latex?nDCG_k%3D%5Cfrac%7BDCG_k%7D%7BIDCG_k%7D)
 
 where *k* = 5, *rel_i* is the relevance of the result at position  *i*, *IDCG_k* is the maximum possible (ideal) *DCG* for a given set of queries. All *NDCG* calculations are relative values on the interval 0.0 to 1.0.
-
-
-## Vizualization - 2 Weeks
-In the ideal case, an interactive visualization map of each destination country with a user type will be presented.   
