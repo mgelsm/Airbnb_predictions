@@ -13,6 +13,7 @@ from xgboost.sklearn import XGBClassifier
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import learning_curve
+from sklearn import model_selection
 import xgboost as xgb
 import matplotlib.pyplot as plt 
 import metrics_helper as metrics_helper
@@ -132,7 +133,10 @@ def buildFeatsMatBinary(df_train, df_test, df_sessions):
     # Split again train and test dataset
     df_train = df_all[:df_train_len]
     df_test = df_all[df_train_len:]
-    
+    df_train.reset_index(inplace = True,drop =True)
+    df_test.reset_index(inplace = True,drop =True)
+    df_binary.reset_index(inplace = True, drop =True)
+
     return df_binary, df_train, df_test
 
 
@@ -191,11 +195,12 @@ def plotFeaturesImportance(model,X_train):
     plt.bar(range(n_features), importances[indices[:n_features]], align="center")
     plt.xticks(range(n_features), indices[:n_features])
     plt.xlim([-1, n_features])
+    plt.ylabel('NDCG score')
     plt.show()
 
-def plotLearningCurve(model,X_train,y_labels,cv):
+def plotLearningCurve(model,X_train,y_labels,cv,title):
     plt.figure()
-    plt.title("XGB model")
+    plt.title(title)
     plt.xlabel("Training examples")
     plt.ylabel("NDCG score")
 
@@ -222,3 +227,119 @@ def plotLearningCurve(model,X_train,y_labels,cv):
     #axes.set_ylim([0.4,1.05])
 
     plt.legend(loc="best")
+
+# @arg[in] X_train_sparse : Training dataset  
+# @arg[in] y_labels : Countries
+# @arg[in] cv : 
+# @arg[in] max_depth :
+# @arg[in] n_estimators :
+# @arg[in] learning_rates :
+# @arg[in] gamma :
+# @return : all the tuned parameters
+def CrossVal_XGB(X_train_sparse, y_labels, cv,max_depth,n_estimators,learning_rates,gamma):
+    rf_score_rates = []
+    rf_score_depth = []
+    rf_score_estimators = []
+    rf_score_gamma = []
+    rf_param_rates = []
+    rf_param_depth = []
+    rf_param_estimators = []
+    rf_param_gamma = []
+    
+    #Loop for  hyperparameter max_depth
+    for max_depth_idx, max_depth_value in enumerate(max_depth):
+
+        print('max_depth_idx: ',max_depth_idx+1,'/',len(max_depth),', value: ', max_depth_value)
+
+        # XCGB
+        model = XGBClassifier(max_depth=max_depth_value, learning_rate=0.1, n_estimators=100,objective='multi:softprob',
+                          subsample=0.5, colsample_bytree=0.5, gamma=0.5 )
+
+        #Scores
+        scores = model_selection.cross_val_score(model, X_train_sparse, y_labels, cv=cv, verbose = 10, n_jobs = 12, scoring=metrics_helper.ndcg_scorer)
+        rf_score_depth.append(scores.mean())
+        rf_param_depth.append(max_depth_value)
+        print('Mean NDCG for this max_depth = ', scores.mean())
+
+    # best number of estimators from above
+    print() 
+    print('best NDCG:')
+    print(np.max(rf_score_depth))
+    print('best parameter max_depth:')
+    idx_best = np.argmax(rf_score_depth)
+    best_num_depth_XCG = rf_param_depth[idx_best]
+    print(best_num_depth_XCG)
+    #---------------------------------------------------------------------------------------------------------
+    #Loop for hyperparameter n_estimators
+    for n_estimators_idx, n_estimators_value in enumerate(n_estimators):
+
+        print('n_estimators_idx: ',n_estimators_idx+1,'/',len(n_estimators),', value: ', n_estimators_value)
+
+        # XCGB
+        model = XGBClassifier(max_depth=best_num_depth_XCG, learning_rate=0.1, n_estimators=n_estimators_value,objective='multi:softprob',
+                          subsample=0.5, colsample_bytree=0.5, gamma=0.5 )
+
+        #Scores
+        scores = model_selection.cross_val_score(model, X_train_sparse, y_labels, cv=cv, verbose = 10, n_jobs = 12, scoring=metrics_helper.ndcg_scorer)
+        rf_score_estimators.append(scores.mean())
+        rf_param_estimators.append(n_estimators_value)
+        print('Mean NDCG for this n_estimators = ', scores.mean())
+
+    # best number of estimators from above
+    print() 
+    print('best NDCG:')
+    print(np.max(rf_score_estimators))
+    print('best parameter num_estimators:')
+    idx_best = np.argmax(rf_score_estimators)
+    best_num_estimators_XCG = rf_param_estimators[idx_best]
+    print(best_num_estimators_XCG)
+    #---------------------------------------------------------------------------------------------------------
+    #Loop for  hyperparameter learning rate
+    for gamma_idx, gamma_value in enumerate(gamma):
+
+        print('gamma_idx: ',gamma_idx+1,'/',len(gamma),', value: ', gamma_value)
+
+        # XGB
+        model = XGBClassifier(max_depth=best_num_depth_XCG, learning_rate=0.1, n_estimators=best_num_estimators_XCG,objective='multi:softprob',
+                          subsample=0.5, colsample_bytree=0.5, gamma=gamma_value )
+
+        #Scores
+        scores = model_selection.cross_val_score(model, X_train_sparse, y_labels, cv=cv, verbose = 10, n_jobs = 12, scoring=metrics_helper.ndcg_scorer)
+        rf_score_gamma.append(scores.mean())
+        rf_param_gamma.append(gamma_value)
+        print('Mean NDCG for this gamma = ', scores.mean())
+
+    # best number of trees from above
+    print() 
+    print('best NDCG:')
+    print(np.max(rf_score_gamma))
+    print('best parameter gamma:')
+    idx_best = np.argmax(rf_score_gamma)
+    best_gamma_XCG = rf_param_gamma[idx_best]
+    print(best_gamma_XCG)
+    #---------------------------------------------------------------------------------------------------------
+    #Loop for  hyperparameter gamma
+    for learning_rates_idx, learning_rates_value in enumerate(learning_rates):
+
+        print('learning_rates_idx: ',learning_rates_idx+1,'/',len(learning_rates),', value: ', learning_rates_value)
+
+        # XGB
+        model = XGBClassifier(max_depth=best_num_depth_XCG, learning_rate=learning_rates_value, n_estimators=best_num_estimators_XCG,objective='multi:softprob',
+                          subsample=0.5, colsample_bytree=0.5, gamma=best_gamma_XCG )
+
+        #Scores
+        scores = model_selection.cross_val_score(model, X_train_sparse, y_labels, cv=cv, verbose = 10, n_jobs = 12, scoring=metrics_helper.ndcg_scorer)
+        rf_score_rates.append(scores.mean())
+        rf_param_rates.append(learning_rates_value)
+        print('Mean NDCG for this learning rate = ', scores.mean())
+
+    # best number of trees from above
+    print() 
+    print('best NDCG:')
+    print(np.max(rf_score_rates))
+    print('best parameter learning rates:')
+    idx_best = np.argmax(rf_score_rates)
+    best_learning_rate_XCG = rf_param_rates[idx_best]
+    print(best_learning_rate_XCG)
+    
+    return best_gamma_XCG, best_num_estimators_XCG,best_num_depth_XCG, best_learning_rate_XCG
