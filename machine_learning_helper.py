@@ -80,6 +80,62 @@ def buildTargetMat(df):
     return (y,label_enc)
 
 
+# @name buildFeatsMatBinary for the Stacking model
+# @arg[in] df_train : cleaned dataframe of training users
+# @arg[in] df_test : cleaned dataframe of testing users
+# @arg[in] df_sessions : cleaned dataframe of sessions
+# @return df_train, df_test, df_binary : dataframe prepared for Machine learning
+def buildFeatsMatBinary(df_train, df_test, df_sessions):
+    df_binary = df_train
+    df_binary.loc[df_binary['country_destination'].isin(['NDF']), 'country_destination'] = 0
+    df_binary.loc[df_binary['country_destination'].isin(['US', 'other', 'FR', 'DE', 'AU', 'CA', 'GB','IT', 'ES', 'PT', 'NL' ]), 'country_destination'] = 1
+    df_binary = df_binary['country_destination']
+
+    
+    # Concat train and test dataset so that the feature engineering and processing can be the same on the whole dataset
+    df_train_len = df_train.shape[0]
+    df_train = df_train.drop(['country_destination'],axis=1)
+    df_all = pd.concat((df_train, df_test), axis=0, ignore_index=True)
+    
+    ## ---- Feature Engineering ---- ####
+    # Features Session
+    df_all = pd.merge(df_all, df_sessions, on='id', how='left', left_index=True)
+    df_all = df_all.fillna(-1)
+    
+    # Feature date_account_created
+    dac = np.vstack(df_all.date_account_created.astype(str).apply(lambda x: list(map(int, x.split('-')))).values)
+    df_all['dac_year'] = dac[:,0].astype(np.int8)
+    df_all['dac_month'] = dac[:,1].astype(np.int8)
+    df_all['dac_day'] = dac[:,2].astype(np.int8)
+
+    # Feature timestamp_first_active
+    tfa = np.vstack(df_all.timestamp_first_active.astype(str).apply(lambda x: list(map(int, [x[:4],x[4:6],x[6:8],x[8:10],x[10:12],x[12:14]]))).values)
+    df_all['tfa_year'] = tfa[:,0].astype(np.int8)
+    df_all['tfa_month'] = tfa[:,1].astype(np.int8)
+    df_all['tfa_day'] = tfa[:,2].astype(np.int8)
+    
+    
+    #### ---- Feature Processing ---- ####
+    # Drop transformed and useless features
+    df_all = df_all.drop(['id','date_first_booking','timestamp_first_active','date_account_created'], axis=1)
+    
+    # Categorical features
+    feats = ['gender', 'signup_method', 'signup_flow', 'language', 'affiliate_channel', 'affiliate_provider',
+             'first_affiliate_tracked', 'signup_app', 'first_device_type', 'first_browser']
+    
+    # Convert  categorical features to dummy
+    for f in feats:
+        df_dummy = pd.get_dummies(df_all[f], prefix=f).astype(np.int8)
+        df_all = df_all.drop([f], axis=1)
+        df_all = pd.concat((df_all, df_dummy), axis=1)
+    
+    # Split again train and test dataset
+    df_train = df_all[:df_train_len]
+    df_test = df_all[df_train_len:]
+    
+    return df_binary, df_train, df_test
+
+
 # @name predictCountries
 # @arg[in] model (sklearn)
 # @arg[in] X_test = df of features (one_hot representation) for testing
