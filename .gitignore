@@ -3,12 +3,6 @@
 .docx
 
 # Data files
-age_gender_bkts.csv
-countries.csv
-sample_submission_NDF.csv
-sessions.csv
-test_users.csv
-train_users_2.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
