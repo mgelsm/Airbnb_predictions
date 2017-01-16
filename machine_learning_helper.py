@@ -97,33 +97,23 @@ def buildFeatsMatBinary(df_train, df_test, df_sessions):
     df_train_len = df_train.shape[0]
     df_train = df_train.drop(['country_destination'],axis=1)
     df_all = pd.concat((df_train, df_test), axis=0, ignore_index=True)
+
     
     ## ---- Feature Engineering ---- ####
     # Features Session
     df_all = pd.merge(df_all, df_sessions, on='id', how='left', left_index=True)
-    df_all = df_all.fillna(-1)
-    
-    # Feature date_account_created
-    dac = np.vstack(df_all.date_account_created.astype(str).apply(lambda x: list(map(int, x.split('-')))).values)
-    df_all['dac_year'] = dac[:,0].astype(np.int8)
-    df_all['dac_month'] = dac[:,1].astype(np.int8)
-    df_all['dac_day'] = dac[:,2].astype(np.int8)
 
-    # Feature timestamp_first_active
-    tfa = np.vstack(df_all.timestamp_first_active.astype(str).apply(lambda x: list(map(int, [x[:4],x[4:6],x[6:8],x[8:10],x[10:12],x[12:14]]))).values)
-    df_all['tfa_year'] = tfa[:,0].astype(np.int8)
-    df_all['tfa_month'] = tfa[:,1].astype(np.int8)
-    df_all['tfa_day'] = tfa[:,2].astype(np.int8)
-    
     
     #### ---- Feature Processing ---- ####
-    # Drop transformed and useless features
     df_all = df_all.drop(['id','date_first_booking','timestamp_first_active','date_account_created'], axis=1)
-    
+                        
+        
+    df_all = df_all.fillna(-1)    
     # Categorical features
+    #
     feats = ['gender', 'signup_method', 'signup_flow', 'language', 'affiliate_channel', 'affiliate_provider',
              'first_affiliate_tracked', 'signup_app', 'first_device_type', 'first_browser']
-    
+
     # Convert  categorical features to dummy
     for f in feats:
         df_dummy = pd.get_dummies(df_all[f], prefix=f).astype(np.int8)
