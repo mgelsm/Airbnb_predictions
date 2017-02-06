@@ -1,5 +1,9 @@
 # Airbnb Challenge : Where will new guests book their first travel experience?
 
+*Cyril Pecoraro, Malo Grisard, Guillaume Jaume, EPFL, February 2017*
+
+
+
 This project is inspired by a Kaggle challenge proposed in February 2016 via their [website] (https://www.kaggle.com/c/airbnb-recruiting-new-user-bookings/data).
 It aims at determining where new guests will book their first travel experience.
 By accurately predicting this information, Airbnb can share more personalized content with their community, decrease the average time to first booking, and better forecast demand.
