@@ -35,9 +35,11 @@ Using Cross-Validationt of ind the optimal parameters, 4 models were tried:
 - Random Forest
   - Depth 16, Trees 600
   - NDCG : 0.86686
+  
 - XGBOOST
   - Depth 7, gamma 0.7, estimators 75, learning rate 0.1, multisoftprob
   - Best model : NDCG 0.86987, ranked 699, top 45%
+  
 - 2 layers stacking
   - Bad results because the first layer model has a F score of only 60%.
 [![Screen Shot 2017-02-06 at 11.17.19.png](https://s27.postimg.org/j1iec25mr/Screen_Shot_2017_02_06_at_11_17_19.png)](https://postimg.org/image/wv6r13y7z/)
