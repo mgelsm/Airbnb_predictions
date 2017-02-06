@@ -50,4 +50,5 @@ Using Cross-Validationt of ind the optimal parameters, 4 models were tried:
   - Bad results
 
 
+
 ** Best model XGBOOST : NDCG 0.86987, ranked 699, top 45% **
